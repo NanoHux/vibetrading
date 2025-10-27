@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
+import { SiweNonceResponseDto } from './dto/siwe-nonce-response.dto';
+import { SiweVerifyResponseDto } from './dto/siwe-verify-response.dto';
 
 @Injectable()
 export class AuthService {
-  generateSiweNonce() {
+  generateSiweNonce(): SiweNonceResponseDto {
     // TODO: integrate SIWE nonce generation and Redis-backed session tracking.
-    return { nonce: 'replace-with-randomized-nonce' };
+    return { nonce: randomUUID() };
   }
 
-  verifySiweSignature() {
+  verifySiweSignature(): SiweVerifyResponseDto {
     // TODO: verify SIWE signature, issue session/JWT, and persist session.
     return { verified: false };
   }

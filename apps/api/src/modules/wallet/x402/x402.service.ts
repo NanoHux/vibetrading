@@ -1,19 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
+import { X402PrepareResponseDto } from '../dto/x402-prepare-response.dto';
+import { X402WebhookResponseDto } from '../dto/x402-webhook-response.dto';
 
 @Injectable()
 export class X402Service {
-  createPaymentRequest() {
+  createPaymentRequest(): X402PrepareResponseDto {
     // TODO: integrate Coinbase x402 pricing, nonce generation, and x-payment headers.
     return {
-      price: '0.00',
+      price: '1.00',
       currency: 'USDC',
-      nonce: 'replace-with-generated-nonce',
+      nonce: randomUUID(),
       expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+      memo: 'demo-payment',
     };
   }
 
-  processWebhookCallback() {
+  processWebhookCallback(): X402WebhookResponseDto {
     // TODO: validate receipt, confirm on-chain settlement, and trigger token issuance workflow.
-    return { status: 'accepted' };
+    return { accepted: true };
   }
 }

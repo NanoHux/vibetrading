@@ -1,17 +1,9 @@
 import { create } from 'zustand';
 import { apiClient } from '@/services/apiClient';
-
-interface DailyMetric {
-  day: string;
-  netPnlUsd: string;
-  tradesCount: number;
-  grossVolumeUsd: string;
-  maxDrawdownUsd?: string;
-  maxProfitUsd?: string;
-}
+import { AiMetricDaily } from '@/services/types';
 
 interface MetricsState {
-  dailyMetrics: DailyMetric[];
+  dailyMetrics: AiMetricDaily[];
   loadMetrics: (agentId: string) => Promise<void>;
 }
 
@@ -23,7 +15,7 @@ export const useMetricsStore = create<MetricsState>((set) => ({
       return;
     }
 
-    const metrics = await apiClient<DailyMetric[]>(`/metrics/agents/${agentId}/daily`);
+    const metrics = await apiClient<AiMetricDaily[]>(`/metrics/agents/${agentId}/daily`);
     set({ dailyMetrics: metrics });
   },
 }));

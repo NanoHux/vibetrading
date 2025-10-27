@@ -1,14 +1,7 @@
 import { signMessage } from '@wagmi/core';
 import { SiweMessage } from 'siwe';
 import { apiClient } from './apiClient';
-
-interface SiweNonceResponse {
-  nonce: string;
-}
-
-interface SiweVerifyResponse {
-  verified: boolean;
-}
+import { SiweNonceResponse, SiweVerifyResponse } from './types';
 
 export async function fetchSiweNonce() {
   return apiClient<SiweNonceResponse>('/auth/siwe/nonce');

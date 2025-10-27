@@ -1,5 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { MarketService } from './market.service';
+import { MarketSnapshotDto } from './dto/market-snapshot.dto';
 
 @Controller('market')
 export class MarketController {
@@ -10,7 +11,7 @@ export class MarketController {
     @Query('symbol') symbol: string,
     @Query('tf') timeframe: string,
     @Query('limit') limit?: string,
-  ) {
+  ): MarketSnapshotDto[] {
     return this.marketService.listSnapshots(symbol, timeframe, Number(limit ?? 10));
   }
 }

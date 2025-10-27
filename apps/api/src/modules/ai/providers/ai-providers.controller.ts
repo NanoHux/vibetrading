@@ -1,17 +1,18 @@
 import { Controller, Get, Post } from '@nestjs/common';
 import { AiProvidersService } from './ai-providers.service';
+import { AiProviderDto } from './dto/ai-provider.dto';
 
 @Controller('ai/providers')
 export class AiProvidersController {
   constructor(private readonly providersService: AiProvidersService) {}
 
   @Get()
-  listProviders() {
+  listProviders(): AiProviderDto[] {
     return this.providersService.listProviders();
   }
 
   @Post()
-  createProvider() {
+  createProvider(): AiProviderDto {
     return this.providersService.createProvider();
   }
 }

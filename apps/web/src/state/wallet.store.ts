@@ -1,27 +1,17 @@
 import { create } from 'zustand';
 import { apiClient } from '@/services/apiClient';
-
-interface WalletBalance {
-  token: number;
-  equityUsd: number;
-}
-
-interface LedgerEntry {
-  id: string;
-  reason: string;
-  amount: string;
-  createdAt: string;
-}
+import { TokenLedgerEntry, UserBalanceSummary } from '@/services/types';
 
 interface WalletState {
-  balance: WalletBalance;
-  ledger: LedgerEntry[];
+  balance: UserBalanceSummary;
+  ledger: TokenLedgerEntry[];
   loadWallet: () => Promise<void>;
 }
 
-const defaultBalance: WalletBalance = {
-  token: 0,
+const defaultBalance: UserBalanceSummary = {
+  tokenBalance: 0,
   equityUsd: 0,
+  totalDepositsUsd: 0,
 };
 
 export const useWalletStore = create<WalletState>((set) => ({
@@ -29,8 +19,8 @@ export const useWalletStore = create<WalletState>((set) => ({
   ledger: [],
   async loadWallet() {
     const [balance, ledger] = await Promise.all([
-      apiClient<WalletBalance>('/users/me/balance'),
-      apiClient<LedgerEntry[]>('/wallet/token-ledger'),
+      apiClient<UserBalanceSummary>('/users/me/balance'),
+      apiClient<TokenLedgerEntry[]>('/wallet/token-ledger'),
     ]);
     set({ balance, ledger });
   },

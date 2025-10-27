@@ -1,14 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { AiProviderDto } from './dto/ai-provider.dto';
 
 @Injectable()
 export class AiProvidersService {
-  listProviders() {
+  listProviders(): AiProviderDto[] {
     // TODO: query providers via Prisma.
-    return [];
+    return [
+      {
+        id: 'provider-deepseek',
+        name: 'deepseek',
+        apiBase: 'https://api.deepseek.com',
+        models: ['deepseek-chat', 'deepseek-trader'],
+      },
+    ];
   }
 
-  createProvider() {
+  createProvider(): AiProviderDto {
     // TODO: persist provider metadata and model catalog.
-    return {};
+    return {
+      id: 'provider-new',
+      name: 'new-provider',
+      apiBase: undefined,
+      models: [],
+    };
   }
 }

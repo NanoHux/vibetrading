@@ -1,9 +1,8 @@
-import { Processor, Process } from '@nestjs/bullmq';
+import { Injectable } from '@nestjs/common';
 import { Job } from 'bullmq';
 
-@Processor('market-ingest')
+@Injectable()
 export class MarketIngestProcessor {
-  @Process()
   async handle(job: Job<{ symbol: string }>) {
     // TODO: call Hyperliquid service, compute indicators, persist market snapshot.
     return { symbol: job.data.symbol };

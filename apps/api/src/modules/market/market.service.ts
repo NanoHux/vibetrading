@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { HyperliquidService } from './hyperliquid/hyperliquid.service';
+import { MarketSnapshotDto } from './dto/market-snapshot.dto';
 
 @Injectable()
 export class MarketService {
   constructor(private readonly hyperliquid: HyperliquidService) {}
 
-  listSnapshots(symbol: string, timeframe: string, limit: number) {
+  listSnapshots(symbol: string, timeframe: string, limit: number): MarketSnapshotDto[] {
     // TODO: pull from Prisma using filters and integrate indicator calculations.
     return this.hyperliquid.fetchCachedSnapshots(symbol, timeframe, limit);
   }

@@ -1,19 +1,42 @@
 import { Injectable } from '@nestjs/common';
+import { AiAgentDto } from './dto/ai-agent.dto';
+import { CreateAiAgentDto } from './dto/create-ai-agent.dto';
+import { AiAgentRunResponseDto } from './dto/ai-agent-run-response.dto';
 
 @Injectable()
 export class AiAgentsService {
-  listAgents() {
+  listAgents(): AiAgentDto[] {
     // TODO: fetch agents with provider and prompt metadata.
-    return [];
+    return [
+      {
+        id: 'agent-demo',
+        name: 'DeepSeek-A1',
+        model: 'deepseek-trader',
+        provider: 'deepseek',
+        isActive: true,
+        createdAt: new Date().toISOString(),
+      },
+    ];
   }
 
-  createAgent() {
+  createAgent(payload: CreateAiAgentDto): AiAgentDto {
     // TODO: enforce unique (apiKey, prompt) constraint and persist agent.
-    return {};
+    return {
+      id: `agent-${payload.agentName}`,
+      name: payload.agentName,
+      model: payload.modelName,
+      provider: payload.providerId,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    };
   }
 
-  triggerRun(agentId: string) {
+  triggerRun(agentId: string): AiAgentRunResponseDto {
     // TODO: dispatch BullMQ job to execute AI run for the requested agent.
-    return { agentId, queued: true };
+    return {
+      agentId,
+      runId: `${agentId}-run-${Date.now()}`,
+      status: 'queued',
+    };
   }
 }
