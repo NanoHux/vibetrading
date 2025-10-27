@@ -1,0 +1,340 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DepositStatus {
+  pending
+  confirmed
+  failed
+}
+
+enum TokenLedgerReason {
+  deposit_reward
+  order_fee
+  manual_adjust
+}
+
+enum PositionSide {
+  long
+  short
+}
+
+enum PositionStatus {
+  open
+  closed
+}
+
+enum OrderSide {
+  buy
+  sell
+}
+
+enum OrderType {
+  market
+  limit
+  reduce_only
+  tp
+  sl
+}
+
+enum OrderStatus {
+  created
+  filled
+  part_filled
+  cancelled
+  rejected
+}
+
+enum AiDecisionAction {
+  HOLD
+  BUY
+  SELL
+  NONE
+}
+
+model User {
+  id          String        @id @default(uuid()) @db.Uuid
+  email       String?       @unique
+  displayName String?       @map("display_name")
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime      @default(now()) @map("updated_at") @db.Timestamptz(6)
+  wallets     UserWallet[]
+  deposits    Deposit[]
+  tokenLedger TokenLedger[]
+
+  @@map("users")
+}
+
+model UserWallet {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  chain      String   @default("base")
+  address    String
+  isPrimary  Boolean  @default(true) @map("is_primary")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_wallets")
+  @@unique([chain, address])
+  @@unique([userId, isPrimary], map: "uq_user_primary")
+}
+
+model Deposit {
+  id         String         @id @default(uuid()) @db.Uuid
+  userId     String         @map("user_id") @db.Uuid
+  txHash     String         @map("tx_hash")
+  chain      String         @default("base")
+  asset      String         @default("USDC")
+  amountUsdc Decimal        @map("amount_usdc") @db.Decimal(38, 18)
+  status     DepositStatus
+  meta       Json           @default(dbgenerated("'{}'::jsonb"))
+  createdAt  DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenLedger TokenLedger[]
+
+  @@map("deposits")
+  @@unique([txHash])
+}
+
+model TokenLedger {
+  id            String          @id @default(uuid()) @db.Uuid
+  userId        String          @map("user_id") @db.Uuid
+  changeAmount  Decimal         @map("change_amount") @db.Decimal(38, 18)
+  reason        TokenLedgerReason
+  refId         String?         @map("ref_id") @db.Uuid
+  balanceAfter  Decimal         @map("balance_after") @db.Decimal(38, 18)
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("token_ledger")
+}
+
+model TokenSupplyGuard {
+  id          Int     @id @default(1)
+  totalSupply Decimal @map("total_supply") @default("1000000000") @db.Decimal(38, 18)
+  distributed Decimal @default("0") @db.Decimal(38, 18)
+
+  @@map("token_supply_guard")
+}
+
+model AiProvider {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String        @unique
+  apiBase      String?       @map("api_base")
+  modelCatalog Json          @map("model_catalog") @default(dbgenerated("'{}'::jsonb"))
+  apiKeys      AiApiKey[]
+  prompts      Prompt[]
+  agents       AiAgent[]
+
+  @@map("ai_providers")
+}
+
+model AiApiKey {
+  id              String      @id @default(uuid()) @db.Uuid
+  providerId      String      @map("provider_id") @db.Uuid
+  keyAlias        String      @map("key_alias")
+  encryptedKey    String      @map("encrypted_key")
+  rateLimitPerMin Int         @map("rate_limit_per_min") @default(60)
+  isActive        Boolean     @map("is_active") @default(true)
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  provider        AiProvider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  agents          AiAgent[]
+
+  @@map("ai_api_keys")
+  @@unique([providerId, keyAlias])
+}
+
+model Prompt {
+  id         String      @id @default(uuid()) @db.Uuid
+  providerId String      @map("provider_id") @db.Uuid
+  name       String
+  content    String
+  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  provider   AiProvider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  agents     AiAgent[]
+
+  @@map("prompts")
+  @@unique([providerId, name])
+}
+
+model AiAgent {
+  id          String       @id @default(uuid()) @db.Uuid
+  providerId  String       @map("provider_id") @db.Uuid
+  apiKeyId    String       @map("api_key_id") @db.Uuid
+  promptId    String       @map("prompt_id") @db.Uuid
+  agentName   String       @map("agent_name")
+  modelName   String       @map("model_name")
+  isActive    Boolean      @map("is_active") @default(true)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  provider    AiProvider   @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  apiKey      AiApiKey     @relation(fields: [apiKeyId], references: [id], onDelete: Restrict)
+  prompt      Prompt       @relation(fields: [promptId], references: [id], onDelete: Restrict)
+  runs        AiRun[]
+  decisions   AiDecision[]
+  accounts    AiAccount[]
+  metricsDaily AiMetricsDaily[]
+
+  @@map("ai_agents")
+  @@unique([apiKeyId, promptId])
+}
+
+model MarketSnapshot {
+  id          String   @id @default(uuid()) @db.Uuid
+  source      String   @default("hyperliquid")
+  symbol      String
+  timeframe   String
+  snapshotAt  DateTime @map("snapshot_at") @db.Timestamptz(6)
+  current     Json
+  intraday    Json
+  longterm    Json
+  oiFunding   Json?    @map("oi_funding")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("market_snapshots")
+  @@unique([symbol, timeframe, snapshotAt])
+}
+
+model AiAccount {
+  id           String        @id @default(uuid()) @db.Uuid
+  agentId      String        @map("agent_id") @db.Uuid
+  exchange     String        @default("hyperliquid")
+  accountLabel String        @map("account_label")
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  agent        AiAgent       @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  balances     AiBalance[]
+  balanceHistory AiBalanceHistory[]
+  positions    Position[]
+  orders       Order[]
+
+  @@map("ai_accounts")
+  @@unique([agentId, exchange])
+}
+
+model AiBalance {
+  id          String    @id @default(uuid()) @db.Uuid
+  accountId   String    @map("account_id") @db.Uuid
+  equityUsd   Decimal   @map("equity_usd") @db.Decimal(38, 18)
+  availableUsd Decimal  @map("available_usd") @db.Decimal(38, 18)
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  account     AiAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("ai_balance")
+}
+
+model AiBalanceHistory {
+  id           String    @id @default(uuid()) @db.Uuid
+  accountId    String    @map("account_id") @db.Uuid
+  equityUsd    Decimal   @map("equity_usd") @db.Decimal(38, 18)
+  availableUsd Decimal   @map("available_usd") @db.Decimal(38, 18)
+  pnlRealized  Decimal   @map("pnl_realized") @default("0") @db.Decimal(38, 18)
+  pnlUnrealized Decimal  @map("pnl_unrealized") @default("0") @db.Decimal(38, 18)
+  sharpe       Decimal?  @db.Decimal(18, 8)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  account      AiAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("ai_balance_history")
+}
+
+model Position {
+  id          String        @id @default(uuid()) @db.Uuid
+  accountId   String        @map("account_id") @db.Uuid
+  symbol      String
+  side        PositionSide
+  quantity    Decimal       @db.Decimal(38, 18)
+  entryPrice  Decimal       @map("entry_price") @db.Decimal(38, 18)
+  liqPrice    Decimal?      @map("liq_price") @db.Decimal(38, 18)
+  leverage    Decimal?      @db.Decimal(18, 8)
+  exitPlan    Json?         @map("exit_plan")
+  openedAt    DateTime      @map("opened_at") @db.Timestamptz(6)
+  closedAt    DateTime?     @map("closed_at") @db.Timestamptz(6)
+  status      PositionStatus @default(open)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  account     AiAccount     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("positions")
+  @@index([accountId, symbol, status], map: "positions_idx")
+}
+
+model Order {
+  id          String      @id @default(uuid()) @db.Uuid
+  accountId   String      @map("account_id") @db.Uuid
+  extOrderId  String?     @map("ext_order_id")
+  symbol      String
+  side        OrderSide
+  orderType   OrderType   @map("order_type")
+  qty         Decimal     @db.Decimal(38, 18)
+  price       Decimal?    @db.Decimal(38, 18)
+  status      OrderStatus
+  realizedPnl Decimal     @map("realized_pnl") @default("0") @db.Decimal(38, 18)
+  meta        Json        @default(dbgenerated("'{}'::jsonb"))
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime    @default(now()) @map("updated_at") @db.Timestamptz(6)
+  account     AiAccount   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("orders")
+  @@index([accountId, symbol, createdAt(sort: Desc)], map: "orders_idx")
+}
+
+model AiRun {
+  id             String     @id @default(uuid()) @db.Uuid
+  agentId        String     @map("agent_id") @db.Uuid
+  runAt          DateTime   @default(now()) @map("run_at") @db.Timestamptz(6)
+  userPrompt     Json       @map("user_prompt")
+  analysisSummary String?   @map("analysis_summary")
+  providerRaw    Json?      @map("provider_raw")
+  latencyMs      Int?       @map("latency_ms")
+  tokensInput    Int?       @map("tokens_input")
+  tokensOutput   Int?       @map("tokens_output")
+  agent          AiAgent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  decisions      AiDecision[]
+
+  @@map("ai_runs")
+}
+
+model AiDecision {
+  id          String          @id @default(uuid()) @db.Uuid
+  runId       String          @map("run_id") @db.Uuid
+  symbol      String
+  action      AiDecisionAction
+  confidence  Decimal?        @db.Decimal(9, 4)
+  quantity    Decimal?        @db.Decimal(38, 18)
+  reasonShort String?         @map("reason_short")
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  run         AiRun           @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@map("ai_decisions")
+  @@unique([runId, symbol])
+}
+
+model AiMetricsDaily {
+  id             String    @id @default(uuid()) @db.Uuid
+  agentId        String    @map("agent_id") @db.Uuid
+  day            DateTime  @db.Date
+  tradesCount    Int       @map("trades_count") @default(0)
+  grossVolumeUsd Decimal   @map("gross_volume_usd") @default("0") @db.Decimal(38, 18)
+  netPnlUsd      Decimal   @map("net_pnl_usd") @default("0") @db.Decimal(38, 18)
+  maxDrawdownUsd Decimal?  @map("max_drawdown_usd") @db.Decimal(38, 18)
+  maxProfitUsd   Decimal?  @map("max_profit_usd") @db.Decimal(38, 18)
+  invocations    Int       @default(0)
+  runtimeMinutes Int       @map("runtime_minutes") @default(0)
+  agent          AiAgent   @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("ai_metrics_daily")
+  @@unique([agentId, day])
+}
+
+model ErrorLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  scope      String
+  refId      String?  @map("ref_id") @db.Uuid
+  message    String
+  detail     Json?
+  occurredAt DateTime @default(now()) @map("occurred_at") @db.Timestamptz(6)
+
+  @@map("errors")
+}
