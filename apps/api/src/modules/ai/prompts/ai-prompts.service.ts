@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AiPromptDto } from './dto/ai-prompt.dto';
-import { CreateAiPromptDto } from './dto/create-ai-prompt.dto';
+import { randomUUID } from 'crypto';
+import { AiPromptDto } from './dto/ai-prompt.dto.js';
+import { CreateAiPromptDto } from './dto/create-ai-prompt.dto.js';
 
 @Injectable()
 export class AiPromptsService {
@@ -20,7 +21,7 @@ export class AiPromptsService {
   createPrompt(payload: CreateAiPromptDto): AiPromptDto {
     // TODO: persist prompt content and link to provider.
     return {
-      id: prompt-,
+      id: `prompt-${randomUUID()}`,
       providerId: payload.providerId,
       name: payload.name,
       content: payload.content,

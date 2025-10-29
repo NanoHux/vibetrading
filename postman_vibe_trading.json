@@ -1,0 +1,705 @@
+{
+  "info": {
+    "_postman_id": "27ed1fbc-9ffd-49d2-804c-37dc17a5e517",
+    "name": "Vibe Trading API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "API surface for Vibe Trading NestJS service. The global prefix `api` is baked into `{{baseUrl}}`. Update the `baseUrl` variable to point at your running backend."
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Get SIWE nonce",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/siwe/nonce",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "siwe",
+                "nonce"
+              ]
+            },
+            "description": "Generates a SIWE nonce and stores it in the session."
+          },
+          "response": []
+        },
+        {
+          "name": "Verify SIWE signature",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/siwe/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "siwe",
+                "verify"
+              ]
+            },
+            "description": "Verifies the SIWE message + signature and establishes a session cookie.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"<paste signed SIWE message>\",\n  \"signature\": \"0x<signature>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get current user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Returns the profile for the SIWE-authenticated user. Requires the session cookie from the SIWE verify call."
+          },
+          "response": []
+        },
+        {
+          "name": "Get current balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me/balance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "balance"
+              ]
+            },
+            "description": "Returns the token balance + aggregate deposits for the authenticated user."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Market",
+      "item": [
+        {
+          "name": "List market snapshots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/market/snapshots",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "market",
+                "snapshots"
+              ],
+              "query": [
+                {
+                  "key": "symbol",
+                  "value": "ETH",
+                  "description": "Symbol ticker e.g. BTC, ETH."
+                },
+                {
+                  "key": "tf",
+                  "value": "1h",
+                  "description": "Timeframe identifier (e.g. 1m, 5m, 1h)."
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Optional max rows (defaults to 10)."
+                }
+              ]
+            },
+            "description": "Fetches recent market snapshots for a symbol / timeframe combination."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Trading",
+      "item": [
+        {
+          "name": "List open positions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/positions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trading",
+                "positions"
+              ]
+            },
+            "description": "Lists currently open trading positions (demo data)."
+          },
+          "response": []
+        },
+        {
+          "name": "List orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trading",
+                "orders"
+              ]
+            },
+            "description": "Lists recent orders (demo data)."
+          },
+          "response": []
+        },
+        {
+          "name": "Create order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/trading/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trading",
+                "orders"
+              ]
+            },
+            "description": "Submits a new order for execution (demo implementation).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": \"11111111-2222-3333-4444-555555555555\",\n  \"symbol\": \"ETH\",\n  \"side\": \"buy\",\n  \"orderType\": \"limit\",\n  \"qty\": \"1.5\",\n  \"price\": \"3200.00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "Providers",
+          "item": [
+            {
+              "name": "List AI providers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/providers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "providers"
+                  ]
+                },
+                "description": "Retrieves available AI model providers."
+              },
+              "response": []
+            },
+            {
+              "name": "Create AI provider",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/providers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "providers"
+                  ]
+                },
+                "description": "Placeholder endpoint to create a new AI provider (demo implementation, no body required)."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Prompts",
+          "item": [
+            {
+              "name": "List AI prompts",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/prompts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "prompts"
+                  ]
+                },
+                "description": "Returns stored AI prompts."
+              },
+              "response": []
+            },
+            {
+              "name": "Create AI prompt",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/prompts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "prompts"
+                  ]
+                },
+                "description": "Creates a new AI prompt for a provider.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"providerId\": \"provider-deepseek\",\n  \"name\": \"breakout-detector\",\n  \"content\": \"You are an autonomous trading agent that monitors breakout setups.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Agents",
+          "item": [
+            {
+              "name": "List AI agents",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/agents",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "agents"
+                  ]
+                },
+                "description": "Lists configured AI agents."
+              },
+              "response": []
+            },
+            {
+              "name": "Create AI agent",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/agents",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "agents"
+                  ]
+                },
+                "description": "Registers a new AI agent mapping provider, API key, and prompt.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"providerId\": \"11111111-1111-1111-1111-111111111111\",\n  \"apiKeyId\": \"22222222-2222-2222-2222-222222222222\",\n  \"promptId\": \"33333333-3333-3333-3333-333333333333\",\n  \"agentName\": \"Demo Agent\",\n  \"modelName\": \"deepseek-trader\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Trigger agent run",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/agents/{{agentId}}/run",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "agents",
+                    "{{agentId}}",
+                    "run"
+                  ]
+                },
+                "description": "Triggers an AI run for the specified agent. Set the `agentId` collection/environment variable before calling."
+              },
+              "response": []
+            },
+            {
+              "name": "Get agent balances",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/agents/{{agentId}}/balances",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "agents",
+                    "{{agentId}}",
+                    "balances"
+                  ]
+                },
+                "description": "Lists balances associated with an AI agent."
+              },
+              "response": []
+            },
+            {
+              "name": "List agent decisions",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/agents/{{agentId}}/decisions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "agents",
+                    "{{agentId}}",
+                    "decisions"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "2024-10-20T00:00:00Z",
+                      "description": "Optional start timestamp filter."
+                    },
+                    {
+                      "key": "to",
+                      "value": "2024-10-27T23:59:59Z",
+                      "description": "Optional end timestamp filter."
+                    }
+                  ]
+                },
+                "description": "Lists AI decisions for an agent with optional `from`/`to` ISO8601 filters."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Runs",
+          "item": [
+            {
+              "name": "Get AI run by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/ai/runs/{{runId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "runs",
+                    "{{runId}}"
+                  ]
+                },
+                "description": "Fetches details for a specific AI run."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Metrics",
+          "item": [
+            {
+              "name": "List agent daily metrics",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/metrics/agents/{{agentId}}/daily",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "metrics",
+                    "agents",
+                    "{{agentId}}",
+                    "daily"
+                  ]
+                },
+                "description": "Returns daily performance metrics for an AI agent."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wallet",
+      "item": [
+        {
+          "name": "Prepare X402 payment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wallet/x402/prepare",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "x402",
+                "prepare"
+              ]
+            },
+            "description": "Generates a payment request for the X402 flow (demo response)."
+          },
+          "response": []
+        },
+        {
+          "name": "Handle X402 webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wallet/x402/webhook",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "x402",
+                "webhook"
+              ]
+            },
+            "description": "Endpoint for X402 webhook callbacks (demo implementation).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"payment.confirmed\",\n  \"nonce\": \"demo-nonce\",\n  \"amount\": \"1000\",\n  \"currency\": \"USDC\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List token ledger",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wallet/token-ledger",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "token-ledger"
+              ]
+            },
+            "description": "Returns token ledger entries for the current user (demo data)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Errors",
+      "item": [
+        {
+          "name": "List error entries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/errors",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "errors"
+              ],
+              "query": [
+                {
+                  "key": "scope",
+                  "value": "wallet",
+                  "description": "Optional category filter."
+                }
+              ]
+            },
+            "description": "Lists recent error entries. Optionally filter by scope."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Hyperliquid webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/hyperliquid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "hyperliquid"
+              ]
+            },
+            "description": "Webhook receiver for Hyperliquid events (demo acknowledgement).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"order.update\",\n  \"payload\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Wallet webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/wallet",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "wallet"
+              ]
+            },
+            "description": "Webhook receiver for wallet-related events (demo acknowledgement).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"wallet.event\",\n  \"payload\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string",
+      "description": "Backend base URL including the `/api` prefix."
+    }
+  ]
+}

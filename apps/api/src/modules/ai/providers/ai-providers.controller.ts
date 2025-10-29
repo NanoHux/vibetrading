@@ -1,6 +1,6 @@
 import { Controller, Get, Post } from '@nestjs/common';
-import { AiProvidersService } from './ai-providers.service';
-import { AiProviderDto } from './dto/ai-provider.dto';
+import { AiProvidersService } from './ai-providers.service.js';
+import { AiProviderDto } from './dto/ai-provider.dto.js';
 
 @Controller('ai/providers')
 export class AiProvidersController {

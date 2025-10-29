@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { X402PrepareResponseDto } from '../dto/x402-prepare-response.dto';
-import { X402WebhookResponseDto } from '../dto/x402-webhook-response.dto';
+import { X402PrepareResponseDto } from '../dto/x402-prepare-response.dto.js';
+import { X402WebhookResponseDto } from '../dto/x402-webhook-response.dto.js';
 
 @Injectable()
 export class X402Service {

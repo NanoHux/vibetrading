@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { OrdersService } from './orders.service';
-import { OrderSummaryDto } from './dto/order-summary.dto';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { OrderSubmissionResponseDto } from './dto/order-submission-response.dto';
+import { OrdersService } from './orders.service.js';
+import { OrderSummaryDto } from './dto/order-summary.dto.js';
+import { CreateOrderDto } from './dto/create-order.dto.js';
+import { OrderSubmissionResponseDto } from './dto/order-submission-response.dto.js';
 
 @Controller('trading/orders')
 export class OrdersController {

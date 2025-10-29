@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { MarketService } from './market.service';
-import { MarketSnapshotDto } from './dto/market-snapshot.dto';
+import { MarketService } from './market.service.js';
+import { MarketSnapshotDto } from './dto/market-snapshot.dto.js';
 
 @Controller('market')
 export class MarketController {

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AiPromptsService } from './ai-prompts.service';
-import { AiPromptDto } from './dto/ai-prompt.dto';
-import { CreateAiPromptDto } from './dto/create-ai-prompt.dto';
+import { AiPromptsService } from './ai-prompts.service.js';
+import { AiPromptDto } from './dto/ai-prompt.dto.js';
+import { CreateAiPromptDto } from './dto/create-ai-prompt.dto.js';
 
 @Controller('ai/prompts')
 export class AiPromptsController {

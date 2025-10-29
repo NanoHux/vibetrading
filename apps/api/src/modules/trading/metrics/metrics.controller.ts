@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { MetricsService } from './metrics.service';
-import { AiMetricDailyDto } from './dto/ai-metric-daily.dto';
+import { MetricsService } from './metrics.service.js';
+import { AiMetricDailyDto } from './dto/ai-metric-daily.dto.js';
 
 @Controller('metrics/agents/:id')
 export class MetricsController {

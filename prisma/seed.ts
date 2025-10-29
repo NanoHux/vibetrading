@@ -24,7 +24,7 @@ async function main() {
     create: {
       providerId: provider.id,
       keyAlias: 'ds-key-001',
-      encryptedKey: 'kms://replace-with-real-secret',
+      encryptedKey: 'sk-9a08762dca084487922a5d5037ab9f1b',
     },
   });
 

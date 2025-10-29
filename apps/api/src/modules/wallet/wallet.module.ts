@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { WalletController } from './wallet.controller';
-import { WalletService } from './wallet.service';
-import { X402Service } from './x402/x402.service';
+import { WalletController } from './wallet.controller.js';
+import { WalletService } from './wallet.service.js';
+import { X402Service } from './x402/x402.service.js';
 
 @Module({
   controllers: [WalletController],

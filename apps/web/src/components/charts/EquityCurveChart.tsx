@@ -7,7 +7,7 @@ interface EquityCurveChartProps {
 export function EquityCurveChart({ dataPoints }: EquityCurveChartProps) {
   // TODO: replace placeholder with actual chart implementation.
   const latest = dataPoints.at(-1);
-  const subtitle = latest ? Latest equity: {Number(latest.equityUsd).toLocaleString()} : undefined;
+  const subtitle = latest ? `Latest equity: ${Number(latest.equityUsd).toLocaleString()}` : undefined;
 
   return <ChartPlaceholder title="Equity Curve" subtitle={subtitle} height={280} />;
 }

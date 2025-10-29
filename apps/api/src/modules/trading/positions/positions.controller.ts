@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
-import { PositionsService } from './positions.service';
-import { PositionSummaryDto } from './dto/position-summary.dto';
+import { PositionsService } from './positions.service.js';
+import { PositionSummaryDto } from './dto/position-summary.dto.js';
 
 @Controller('trading/positions')
 export class PositionsController {

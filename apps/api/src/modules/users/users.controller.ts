@@ -1,19 +1,23 @@
-import { Controller, Get } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UserProfileDto } from './dto/user-profile.dto';
-import { UserBalanceDto } from './dto/user-balance.dto';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import type { Request } from 'express';
+import { UsersService } from './users.service.js';
+import { UserProfileDto } from './dto/user-profile.dto.js';
+import { UserBalanceDto } from './dto/user-balance.dto.js';
+import { SiweAuthGuard } from '../auth/guards/siwe-auth.guard.js';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(SiweAuthGuard)
   @Get('me')
-  getProfile(): UserProfileDto {
-    return this.usersService.getCurrentProfile();
+  getProfile(@Req() request: Request): Promise<UserProfileDto> {
+    return this.usersService.getCurrentProfile(request.siwe!.userId);
   }
 
+  @UseGuards(SiweAuthGuard)
   @Get('me/balance')
-  getBalance(): UserBalanceDto {
-    return this.usersService.getCurrentBalance();
+  getBalance(@Req() request: Request): Promise<UserBalanceDto> {
+    return this.usersService.getCurrentBalance(request.siwe!.userId);
   }
 }

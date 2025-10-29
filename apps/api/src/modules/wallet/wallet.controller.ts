@@ -1,8 +1,8 @@
 import { Controller, Get, Post } from '@nestjs/common';
-import { WalletService } from './wallet.service';
-import { X402PrepareResponseDto } from './dto/x402-prepare-response.dto';
-import { X402WebhookResponseDto } from './dto/x402-webhook-response.dto';
-import { TokenLedgerEntryDto } from './dto/token-ledger-entry.dto';
+import { WalletService } from './wallet.service.js';
+import { X402PrepareResponseDto } from './dto/x402-prepare-response.dto.js';
+import { X402WebhookResponseDto } from './dto/x402-webhook-response.dto.js';
+import { TokenLedgerEntryDto } from './dto/token-ledger-entry.dto.js';
 
 @Controller('wallet')
 export class WalletController {

@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { AiRunsService } from './ai-runs.service';
-import { AiRunDto } from './dto/ai-run.dto';
+import { AiRunsService } from './ai-runs.service.js';
+import { AiRunDto } from './dto/ai-run.dto.js';
 
 @Controller('ai/runs')
 export class AiRunsController {

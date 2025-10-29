@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AiMetricDailyDto } from './dto/ai-metric-daily.dto';
+import { AiMetricDailyDto } from './dto/ai-metric-daily.dto.js';
 
 @Injectable()
 export class MetricsService {

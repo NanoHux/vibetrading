@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { X402Service } from './x402/x402.service';
-import { X402PrepareResponseDto } from './dto/x402-prepare-response.dto';
-import { X402WebhookResponseDto } from './dto/x402-webhook-response.dto';
-import { TokenLedgerEntryDto } from './dto/token-ledger-entry.dto';
+import { X402Service } from './x402/x402.service.js';
+import { X402PrepareResponseDto } from './dto/x402-prepare-response.dto.js';
+import { X402WebhookResponseDto } from './dto/x402-webhook-response.dto.js';
+import { TokenLedgerEntryDto } from './dto/token-ledger-entry.dto.js';
 
 @Injectable()
 export class WalletService {

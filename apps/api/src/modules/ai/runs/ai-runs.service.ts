@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AiRunDto } from './dto/ai-run.dto';
+import { AiRunDto } from './dto/ai-run.dto.js';
 
 @Injectable()
 export class AiRunsService {

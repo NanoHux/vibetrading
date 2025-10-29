@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
       port: Number(env.WEB_PORT ?? 5173),
       proxy: {
         '/api': {
-          target: env.API_BASE_URL ?? 'http://localhost:3000',
+          target: env.API_BASE_URL ?? 'http://localhost:5171',
           changeOrigin: true,
           secure: false,
         },

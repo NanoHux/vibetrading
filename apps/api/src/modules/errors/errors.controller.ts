@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ErrorsService } from './errors.service';
-import { ErrorEntryDto } from './dto/error-entry.dto';
+import { ErrorsService } from './errors.service.js';
+import { ErrorEntryDto } from './dto/error-entry.dto.js';
 
 @Controller('errors')
 export class ErrorsController {

@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { AiAgentsService } from './ai-agents.service';
-import { AiAgentDto } from './dto/ai-agent.dto';
-import { CreateAiAgentDto } from './dto/create-ai-agent.dto';
-import { AiAgentRunResponseDto } from './dto/ai-agent-run-response.dto';
+import { AiAgentsService } from './ai-agents.service.js';
+import { AiAgentDto } from './dto/ai-agent.dto.js';
+import { CreateAiAgentDto } from './dto/create-ai-agent.dto.js';
+import { AiAgentRunResponseDto } from './dto/ai-agent-run-response.dto.js';
 
 @Controller('ai/agents')
 export class AiAgentsController {

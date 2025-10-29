@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AiAgentDto } from './dto/ai-agent.dto';
-import { CreateAiAgentDto } from './dto/create-ai-agent.dto';
-import { AiAgentRunResponseDto } from './dto/ai-agent-run-response.dto';
+import { AiAgentDto } from './dto/ai-agent.dto.js';
+import { CreateAiAgentDto } from './dto/create-ai-agent.dto.js';
+import { AiAgentRunResponseDto } from './dto/ai-agent-run-response.dto.js';
 
 @Injectable()
 export class AiAgentsService {

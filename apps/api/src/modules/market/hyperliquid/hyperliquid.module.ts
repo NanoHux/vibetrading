@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { HyperliquidService } from './hyperliquid.service';
+import { HyperliquidService } from './hyperliquid.service.js';
 
 @Module({
   providers: [HyperliquidService],

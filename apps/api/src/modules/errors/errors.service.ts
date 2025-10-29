@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ErrorEntryDto } from './dto/error-entry.dto';
+import { ErrorEntryDto } from './dto/error-entry.dto.js';
 
 @Injectable()
 export class ErrorsService {

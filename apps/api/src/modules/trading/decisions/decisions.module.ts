@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { DecisionsController } from './decisions.controller';
-import { DecisionsService } from './decisions.service';
+import { DecisionsController } from './decisions.controller.js';
+import { DecisionsService } from './decisions.service.js';
 
 @Module({
   controllers: [DecisionsController],

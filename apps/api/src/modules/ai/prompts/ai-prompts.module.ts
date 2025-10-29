@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AiPromptsController } from './ai-prompts.controller';
-import { AiPromptsService } from './ai-prompts.service';
+import { AiPromptsController } from './ai-prompts.controller.js';
+import { AiPromptsService } from './ai-prompts.service.js';
 
 @Module({
   controllers: [AiPromptsController],

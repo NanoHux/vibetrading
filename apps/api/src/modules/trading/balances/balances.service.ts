@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AiBalanceDto } from './dto/ai-balance.dto';
+import { AiBalanceDto } from './dto/ai-balance.dto.js';
 
 @Injectable()
 export class BalancesService {

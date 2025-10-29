@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MarketSnapshotDto } from '../dto/market-snapshot.dto';
+import { MarketSnapshotDto } from '../dto/market-snapshot.dto.js';
 
 @Injectable()
 export class HyperliquidService {

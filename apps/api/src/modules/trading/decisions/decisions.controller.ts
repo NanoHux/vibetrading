@@ -1,7 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { DecisionsService } from './decisions.service';
-import { AiDecisionDto } from './dto/ai-decision.dto';
-import { AiMetricDailyDto } from './dto/ai-metric-daily.dto';
+import { DecisionsService } from './decisions.service.js';
+import { AiDecisionDto } from './dto/ai-decision.dto.js';
 
 @Controller('ai/agents/:id/decisions')
 export class DecisionsController {

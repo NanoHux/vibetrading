@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { AiDecisionDto } from './dto/ai-decision.dto';
+import { AiDecisionDto } from './dto/ai-decision.dto.js';
 
 @Injectable()
 export class DecisionsService {
   listDecisions(agentId: string, from?: string, to?: string): AiDecisionDto[] {
     // TODO: fetch ai_decisions joined with runs within provided range.
     const now = Date.now();
-    return [
+    const decisions: AiDecisionDto[] = [
       {
         runId: `${agentId}-run-${now}`,
         symbol: 'BTC',
@@ -22,7 +22,9 @@ export class DecisionsService {
         action: 'HOLD',
         createdAt: new Date(now - 3600000).toISOString(),
       },
-    ].filter((decision) => {
+    ];
+
+    return decisions.filter((decision) => {
       if (from && new Date(decision.createdAt) < new Date(from)) {
         return false;
       }
